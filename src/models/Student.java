@@ -45,7 +45,6 @@ public class Student {
 	public void setPostCs(List<String> postCs) {
 		this.postCs = postCs;
 	}
-
 	public boolean hasPost() {
 		return postCs != null && postSelf != null;
 	}
@@ -54,6 +53,14 @@ public class Student {
 	}
 	public String getSchool() {
 		return school;
+	}
+
+	public List<String> getList(String tableName) {
+		if(tableName.equals("preCs")) return getPreCs();
+		if(tableName.equals("postCs")) return getPostCs();
+		if(tableName.equals("preSelf")) return getPreSelf();
+		if(tableName.equals("postSelf")) return getPostSelf();
+		throw new RuntimeException("unknown table: " + tableName);
 	}
 
 	

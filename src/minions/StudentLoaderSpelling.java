@@ -5,25 +5,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import models.Student;
 import run.figures.IdentityTanimotoPrePost;
 import util.FileSystem;
 
-public class StudentLoader {
+public class StudentLoaderSpelling {
 	private static final int CS_START = 37;
-	private static final int SELF_END = 34;
+	private static final int SELF_END = 33;
 	private static final int SELF_START = 3;
 	private Map<String, Student> students = new HashMap<String, Student>();
 
 	public static Map<String, Student> load() {
-		StudentLoader l = new StudentLoader();
+		StudentLoaderSpelling l = new StudentLoaderSpelling();
 		l.run();
 		return l.students;
 	}
 	
 	private void run() {
-		File projDir = new File(FileSystem.getDataDir(), "OpenEnded");
+		File projDir = new File(FileSystem.getDataDir(), "Spellcheck");
 		File pre = new File(projDir, "pre.txt");
 		File post = new File(projDir, "post.txt");
 
@@ -40,7 +41,14 @@ public class StudentLoader {
 			if(!students.containsKey(id)) {
 				System.out.println("count not find: " + id);
 			} else {
-				s.setPostSelf(getWords(line, SELF_START, SELF_END));
+				List<String> self = getWords(line, SELF_START, SELF_END);
+				/*for(String str : self) {
+					if(str.contains("computer scientist")) {
+						getWords(line, SELF_START, SELF_END);
+					}
+					
+				}*/
+				s.setPostSelf(self);
 				s.setPostCs(getWords(line, CS_START, getCols(line).length));
 			}
 		}
@@ -94,6 +102,25 @@ public class StudentLoader {
 	}
 
 	private String[] getCols(String line) {
-		return line.split("\t", -1);
+		String curr = "";
+		List<String> cols = new ArrayList<String>();
+		boolean inQuotes = false;
+		for(int i = 0; i < line.length(); i++) {
+			if(line.charAt(i) == ',' && !inQuotes) {
+				cols.add(curr);
+				curr = "";
+			} else {
+				if(line.charAt(i) == '"') {
+					inQuotes = !inQuotes;
+				} else {
+					curr += line.charAt(i);
+				}
+			}
+		}
+		String[] list = new String[cols.size()];
+		for(int i = 0; i < list.length; i++) {
+			list[i] = cols.get(i);
+		}
+		return list;
 	}
 }

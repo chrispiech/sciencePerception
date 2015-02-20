@@ -15,21 +15,22 @@ public class EntriesHistogram {
 
 	private void run() {
 		Map<String, Student> students = StudentLoader.load();
+		
 		CountMap<String> counts = new CountMap<String>();
 		for(String id : students.keySet()) {
 			Student s = students.get(id);
-			for(String item : s.getPreSelf()) {
+			for(String item : s.getPreCs()) {
 				counts.add(item);
 			}
 			if(s.hasPost()) {
-				for(String item : s.getPostSelf()) {
+				for(String item : s.getPostCs()) {
 					counts.add(item);
 				}
 			}
 		}
 		MapSorter<String> sorter = new MapSorter<String>();
 		List<String> keys = sorter.sort(counts);
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < keys.size(); i++) {
 			String key = keys.get(i);
 			int count = counts.get(key);
 			System.out.println(key + "\t" + count);
